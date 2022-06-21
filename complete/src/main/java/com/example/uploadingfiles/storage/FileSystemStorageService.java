@@ -1,5 +1,12 @@
 package com.example.uploadingfiles.storage;
-
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+//import com.marvinjason.huffmancoding.HuffmanCoding;
+//import com.example.uploadingfiles.;
+import java.lang.*;
+import com.example.uploadingfiles.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -42,8 +49,39 @@ public class FileSystemStorageService implements StorageService {
 						"Cannot store file outside current directory.");
 			}
 			try (InputStream inputStream = file.getInputStream()) {
-				Files.copy(inputStream, destinationFile,
-					StandardCopyOption.REPLACE_EXISTING);
+				ByteArrayInputStream stream = new   ByteArrayInputStream(file.getBytes());
+				String fileContent = IOUtils.toString(stream, "UTF-8");
+
+				System.out.println("Trying the given Huffman implementation");
+				System.out.println(fileContent);
+				HuffmanCoding huffman = new HuffmanCoding(fileContent);
+				huffman.compress();
+
+				System.out.println("Size before compression: " + huffman.getUncompressedSize());
+				System.out.println("Size after compression: " + huffman.getCompressedSize());
+
+//				System.out.println("Compressed string: " + huffman.getCompressedString());
+//				FileUtils.writeStringToFile(destinationFile.toFile(), huffman.getCompressedString(),
+//						Charset.forName("UTF-8"), false);
+
+				Files.write(destinationFile, huffman.getCompressedCharString().getBytes());
+//				System.out.println("Successfully wrote out the file");s
+//				System.out.println(huffman.getCompressedCharString());
+//				System.out.println("Length remained by 8 is: " +);
+//				int length = huffman.getCompressedString().length();
+//				int padding =  length % 8;
+//				String compressedContentInBinary = huffman.getCompressedString();
+//				String paddedContent = String.format("%" + padding + "s", compressedContentInBinary);
+//				length += padding + 1;
+//				// length 16; i = 0, 8,
+//
+//				for(int i = 0; i < length; i += 8) {
+//					String char = (char)Integer.parseInt(string, 2)
+//
+//				}
+
+//				Files.copy(inputStream, destinationFile,
+//					StandardCopyOption.REPLACE_EXISTING);
 			}
 		}
 		catch (IOException e) {
@@ -103,3 +141,15 @@ public class FileSystemStorageService implements StorageService {
 		}
 	}
 }
+
+/*
+*
+*
+* ./mvnw install:install-file \
+   -Dfile=/Users/rahultandon/dev/HuffmanCoding.jar  \
+   -DgroupId=com.marvinjason.huffmancoding \
+   -DartifactId=HuffmanCoding \
+   -Dversion=1.0 \
+   -Dpackaging=jar \
+   -DgeneratePom=true
+* */
